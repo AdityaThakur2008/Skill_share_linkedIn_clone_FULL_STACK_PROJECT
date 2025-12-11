@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --primary-color: #6a4bff;
+  --secondary-color: rgb(255, 255, 255);
+  --text-color: rgb(26, 26, 26);
+  --text-secondary-color: rgb(121, 121, 121);
+  --font-weight-light: 300;
+
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --font-family: "Poppins", sans-serif;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  color: var(--text-color);
+}
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.logoBox {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  border-radius: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logoText {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.tagline {
+  margin-left: 1.8rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+}
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navLinks a {
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+.navLinks a:hover {
+  color: var(--primary-color);
+}
+.navLinks .login {
+  color: var(--primary-color);
+}
+
+/* buttions */
+.btnPrimary {
+  padding: 0.8rem 1rem;
+  background-color: var(--primary-color);
+  border-radius: 7px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: rgb(255, 255, 255) !important;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btnPrimary:hover {
+  background-color: #6040ffe0;
+  color: rgb(255, 255, 255);
+}
+.btnSecondary {
+  padding: 0.8rem 1rem;
+  background-color: transparent;
+  border-radius: 7px;
+  border: 1px solid rgba(26, 26, 26, 0.103) !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: var(--text-secondary-color) !important;
+  text-decoration: none;
+}
+/* HAMBURGER FOR MOBILE */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--text-color);
+  transition: 0.3s;
+}
+
+/* Mobile Navbar Hidden by Default */
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+
+  .hamburger {
+    display: flex;
+  }
+
+  .navLinks {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    background: white;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    gap: 1rem;
+    z-index: 999;
+  }
+
+  .navLinks.open {
+    display: flex;
+  }
+
+  .navLinks a {
+    font-size: 1rem;
+  }
+
+  .btnPrimary {
+    width: 100%;
+    text-align: center;
+  }
+}

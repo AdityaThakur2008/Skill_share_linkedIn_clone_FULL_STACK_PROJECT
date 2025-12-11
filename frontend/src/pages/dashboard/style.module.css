@@ -1,0 +1,262 @@
+:root {
+  --primary-color: #6a4bff;
+  --primary-hover: #5b3de6;
+  --light-bg: #fafafa;
+  --border-color: #e0e0e0;
+}
+
+/* Main Box */
+.CreatePostContainer {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+/* Top Row */
+.cp_topRow {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+/* Profile Picture */
+.cp_profilePic {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ddd;
+}
+
+/* Textarea */
+.cp_textarea {
+  flex: 1;
+  min-height: 6rem;
+  resize: none;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border-color);
+  outline: none;
+  font-size: 1rem;
+  background: var(--light-bg);
+  transition: 0.2s;
+}
+
+.cp_textarea:focus {
+  border-color: var(--primary-color);
+}
+
+/* Upload Row */
+.cp_uploadRow {
+  margin-top: 0.7rem;
+  margin-left: 4rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cp_fileBtn {
+  background: var(--light-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  transition: 0.2s;
+}
+
+.cp_fileBtn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.cp_fileInput {
+  display: none;
+}
+
+/* Post Button */
+.cp_postBtn {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--primary-color);
+  color: white;
+  padding: 0.55rem 1.5rem;
+  border: none;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 2px 8px rgba(106, 75, 255, 0.3);
+}
+
+.cp_postBtn:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 3px 10px rgba(106, 75, 255, 0.4);
+}
+/* For post */
+.postCard {
+  width: 100%;
+  background: #fff;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+/* TOP ROW */
+.postTop_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.postTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.profilePic {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.username {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+.deletebtn {
+  background: transparent; /* No background */
+  border: none; /* No border */
+  color: rgb(248, 26, 26); /* Red icon/text */
+  cursor: pointer; /* Pointer on hover */
+  font-size: 16px; /* Icon/text size */
+  display: flex; /* For icon + text if needed */
+  align-items: center;
+  gap: 4px; /* Small gap between icon and text */
+  padding: 2px 4px; /* Small padding */
+  border-radius: 4px; /* Slight rounded corners */
+  transition: color 0.2s ease; /* Smooth hover effect */
+}
+
+.deletebtn:hover {
+  color: darkred; /* Slightly darker on hover */
+}
+
+/* BODY TEXT */
+.body {
+  margin: 12px 0;
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.mediaWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden; /* nothing overflows */
+  margin-top: 10px;
+}
+
+/* POST IMAGE */
+.postImage {
+  width: 100%;
+  max-height: 500px; /* Adjust according to UI */
+  border-radius: 12px;
+  object-fit: contain; /* 🔥 this is the magic */
+  background: #f3f4f6; /* gray bg so portrait images center me dikhe */
+  padding: 8px;
+}
+
+/* FOOTER BUTTONS */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.footer button {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #374151;
+}
+
+.footer button:hover {
+  color: #111;
+}
+.liked {
+  color: #e63d3d;
+}
+.CommentsContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+.commentBox {
+  position: relative;
+  background: #fff;
+  width: 50vw;
+  height: 80vh;
+  border-radius: 1rem;
+}
+.commentInputRow {
+  position: absolute;
+  width: 100%;
+  bottom: 1.2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.noComments{
+  margin: 1.5rem;
+}
+.commentInput {
+flex: 0.8;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  outline: none;
+}
+.sendBtn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
