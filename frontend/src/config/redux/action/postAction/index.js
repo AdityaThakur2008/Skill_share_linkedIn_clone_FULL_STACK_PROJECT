@@ -156,10 +156,34 @@ export const write_comment = createAsyncThunk(
 
       const response = await apiClient.post("/write_comment", {
         token: token,
-        postId: postData._id,
+        postId: postData.postId,
         body: postData.body,
       });
-      dispatch(getAllComment(postData._id));
+      return thunkAPI.fulfillWithValue({
+        message: response.message,
+      });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response.data.message || "Somthing went wrong"
+      );
+    }
+  }
+);
+export const deleteComment = createAsyncThunk(
+  "post/deleteCommnet",
+  async (commentId, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return thunkAPI.rejectWithValue({
+          message: "token not provided",
+        });
+      }
+
+      const response = await apiClient.delete("/delete_comment", {
+        data: { token: token, commentId },
+      });
+
       return thunkAPI.fulfillWithValue({
         message: response.message,
       });

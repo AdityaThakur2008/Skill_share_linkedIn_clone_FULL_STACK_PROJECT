@@ -2,10 +2,12 @@ import NavBar from "@/components/Navbar";
 import { getUserProfile } from "@/config/redux/action/authAction";
 import {
   createPost,
+  deleteComment,
   deletePost,
   getAllComment,
   getAllPosts,
   increment_like,
+  write_comment,
 } from "@/config/redux/action/postAction";
 import Dashboard from "@/layout/dashboardLayout";
 import UserLayout from "@/layout/Userlayout";
@@ -21,6 +23,7 @@ import {
   TextsmsOutlined,
 } from "@mui/icons-material";
 import { resetPostId } from "@/config/redux/reducer/postReducer";
+import { comment } from "postcss";
 
 export default function dashboard() {
   const authState = useSelector((state) => state.auth);
@@ -35,6 +38,7 @@ export default function dashboard() {
   }, [authState.isToken]);
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
+  const [commentBody, setCommentBody] = useState("");
 
   const handlePost = async () => {
     const result = await dispatch(
@@ -55,7 +59,11 @@ export default function dashboard() {
   const openComments = (post) => {
     dispatch(getAllComment(post));
   };
-
+  const handlePostComment = async (postId, commentBody) => {
+    setCommentBody("");
+    await dispatch(write_comment({ postId: postId, body: commentBody }));
+    await dispatch(getAllComment({ _id: postId }));
+  };
   return (
     <div>
       <UserLayout>
@@ -181,19 +189,62 @@ export default function dashboard() {
             <div
               className={style.CommentsContainer}
               onClick={() => dispatch(resetPostId())}>
-              <div className={style.commentBox}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className={style.commentBox}>
                 {/* HEADER */}
-                {postState.comments?.length===0 ? <h4 className={style.noComments}>No Comments Yet</h4> :           <div></div>}
-     
+                {postState.comments?.length === 0 ? (
+                  <h4 className={style.noComments}>No Comments Yet</h4>
+                ) : (
+                  <div className={style.commentBoxContainer}>
+                    <div className={style.showcommentConatiner}>
+                      {postState.comments?.map((comment, index) => {
+                        return (
+                          <div>
+                            <div>
+                              <h6>{comment.userId.username}</h6>
+
+                              <p>{comment.body}</p>
+                            </div>
+                            {comment.userId._id ==
+                              authState.user.userId._id && (
+                              <div
+                                onClick={async () => {
+                                  await dispatch(deleteComment(comment._id));
+                                  await dispatch(
+                                    getAllComment({ _id: postState.postId })
+                                  );
+                                }}>
+                                <DeleteOutline />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* COMMENT INPUT */}
                 <div className={style.commentInputRow}>
                   <input
                     type="text"
                     placeholder="Write a comment..."
+                    value={commentBody}
+                    onChange={(e) => {
+                      setCommentBody(e.target.value);
+                    }}
                     className={style.commentInput}
                   />
-                  <button className={style.sendBtn}>Send</button>
+                  <button
+                    className={style.sendBtn}
+                    onClick={() => {
+                      handlePostComment(postState.postId, commentBody);
+                    }}>
+                    Send
+                  </button>
                 </div>
               </div>
             </div>

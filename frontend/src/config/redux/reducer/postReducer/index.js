@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createPost,
+  deleteComment,
   deletePost,
   getAllComment,
   getAllPosts,
@@ -66,7 +67,11 @@ const postSclice = createSlice({
       })
       .addCase(getAllComment.fulfilled, (state, action) => {
         state.postId = action.payload.postId;
-        state.comments = action.payload.allcomments;
+
+        state.comments = action.payload.comments;
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.message = action.payload.message;
       });
   },
 });

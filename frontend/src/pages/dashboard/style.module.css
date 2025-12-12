@@ -215,48 +215,103 @@
 }
 .CommentsContainer {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(4px);
   z-index: 99999;
 }
+
 .commentBox {
   position: relative;
   background: #fff;
   width: 50vw;
   height: 80vh;
   border-radius: 1rem;
-}
-.commentInputRow {
-  position: absolute;
-  width: 100%;
-  bottom: 1.2rem;
-
+  overflow: hidden;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+}
+
+/* HEADER + COMMENT LIST */
+.commentBoxContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.showcommentConatiner > div {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+}
+
+.showcommentConatiner h6 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.showcommentConatiner p {
+  margin: 4px 0;
+  font-size: 0.87rem;
+  color: #555;
+}
+
+/* COMMENT INPUT ROW */
+.commentInputRow {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  display: flex;
   gap: 1rem;
+  border-top: 1px solid #eee;
+  background: #fff;
 }
-.noComments{
-  margin: 1.5rem;
-}
+
 .commentInput {
-flex: 0.8;
-  padding: 0.8rem;
+  flex: 1;
+  padding: 0.85rem 1rem;
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 0.95rem;
   outline: none;
+  transition: all 0.2s ease;
 }
+
+.commentInput:focus {
+  border-color: var(--primary-color);
+  background: #fff;
+}
+
 .sendBtn {
   background: var(--primary-color);
   color: #fff;
   border: none;
-  padding: 10px 16px;
+  padding: 0.8rem 1.2rem;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.sendBtn:hover {
+  opacity: 0.9;
+}
+
+.noComments {
+  padding: 2rem;
+  text-align: center;
+  color: #777;
+  font-size: 1rem;
 }

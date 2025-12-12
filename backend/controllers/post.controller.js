@@ -68,12 +68,12 @@ export const deletePost = async (req, res) => {
 
 export const get_comments_by_post = async (req, res) => {
   try {
-    
-    const  postId  = req.query.postId;
+    const postId = req.query.postId;
 
-    const allcomments = await comments.find({ postId });
-
-    return res.json({ allcomments });
+    const allcomments = await comments
+      .find({ postId })
+      .populate("userId", "username name");
+    return res.json( allcomments.reverse() );
   } catch (error) {
     console.log("Something Went Wrong in get comments by  post", error);
     return res.status(500).json({ message: "Server Side Error" });
@@ -107,7 +107,7 @@ export const deleteComment = async (req, res) => {
     const userId = req.user._id;
     const { commentId } = req.body;
 
-    const comment = await Comment.findById(commentId);
+    const comment = await comments.findById(commentId);
 
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
