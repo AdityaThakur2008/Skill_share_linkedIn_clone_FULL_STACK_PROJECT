@@ -102,7 +102,7 @@
 .postCard {
   width: 100%;
   background: #fff;
-  padding: 16px;
+  padding: 1rem;
   border-radius: 14px;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
@@ -233,7 +233,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
 }
 
 /* HEADER + COMMENT LIST */

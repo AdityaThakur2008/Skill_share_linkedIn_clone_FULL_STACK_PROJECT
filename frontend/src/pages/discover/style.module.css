@@ -1,0 +1,57 @@
+.DiscoverContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Card */
+.Profile_container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.Profile_container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Image wrapper */
+.imgDiv {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+/* Profile image */
+.img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #e5e7eb;
+}
+
+/* Username */
+.username {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 4px 0;
+}
+
+
+/* Bio */
+.bio {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.4;
+  max-height: 38px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

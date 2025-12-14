@@ -111,6 +111,7 @@ export default function dashboard() {
             <div>Loading...</div>
           )}
           {postState.postFatched && authState.profileFetched ? (
+            
             postState.posts.map((post) => {
               return (
                 <div key={post._id} className={style.postCard}>
