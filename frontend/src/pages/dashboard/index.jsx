@@ -1,5 +1,4 @@
-import NavBar from "@/components/Navbar";
-import { getUserProfile } from "@/config/redux/action/authAction";
+
 import {
   createPost,
   deleteComment,
@@ -23,7 +22,7 @@ import {
   TextsmsOutlined,
 } from "@mui/icons-material";
 import { resetPostId } from "@/config/redux/reducer/postReducer";
-import { comment } from "postcss";
+
 
 export default function dashboard() {
   const authState = useSelector((state) => state.auth);

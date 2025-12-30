@@ -3,7 +3,8 @@
   margin: 1.5rem;
   font-family: sans-serif;
   height: 79vh;          /* IMPORTANT */
-  overflow: hidden;       /* Body scroll remove */
+  overflow: hidden;
+         /* Body scroll remove */
 }
 
 /* MAIN FLEX LAYOUT */
@@ -23,6 +24,7 @@
   height: 100%;           /* Full height sidebar */
   position: sticky;       /* optional: make left bar fixed */
   top: 0;
+  border-right: 1px solid black;
 }
 
 /* Sidebar Options */

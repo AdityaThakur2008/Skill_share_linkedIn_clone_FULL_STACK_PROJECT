@@ -10,8 +10,10 @@ const connectionSchema = new mongoose.Schema({
     ref: "User",
   },
   status: {
-    type: Boolean,
-    default: null,
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+    required: true,
   },
 });
 

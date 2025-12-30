@@ -301,16 +301,19 @@ export const downloadResume = async (req, res) => {
 
 export const SendConnectionRequest = async (req, res) => {
   try {
-    const recipientId = req.body;
+    const { recipientId } = req.body;
+
     const requesterId = req.user._id;
 
     const exixtingUser = await Connection.findOne({
-      requester: requesterId,
-      recipient: recipientId,
+      $or: [
+        { requester: requesterId, recipient: recipientId },
+        { requester: recipientId, recipient: requesterId },
+      ],
     });
 
     if (exixtingUser) {
-      return res.status(302).json({ message: "User already exist" });
+      return res.status(302).json({ message: "connection already exist" });
     }
 
     const request = new Connection({
@@ -362,25 +365,60 @@ export const receivedConnectionRequests = async (req, res) => {
 
 export const acceptOrReject = async (req, res) => {
   try {
-    const { action_type, requesterId } = req.body;
-    const userId = req.user._id;
+   
+    const { action_type, requesterId } = req.body; 
+    const userId = req.user._id; 
+
+    
     const connection = await Connection.findOne({
       requester: requesterId,
       recipient: userId,
+      status: "pending" 
     });
 
     if (!connection) {
-      return res.status(404).json({ message: "Connection not found" });
+   
+      return res.status(404).json({ message: "Connection request not found or already handled." });
     }
 
+   
     if (action_type === "accept") {
-      connection.status = true;
+      connection.status = "accepted"; 
+    } else if (action_type === "reject") {
+      connection.status = "rejected";
     } else {
-      connection.status = false;
+        return res.status(400).json({ message: "Invalid action type specified." });
     }
 
     await connection.save();
-    return res.json({ message: "request Updated" });
+    
+    return res.json({ 
+        message: `Request successfully ${connection.status}.`,
+        connection: connection 
+    });
+
+  } catch (error) {
+    console.error("Error in acceptOrReject Request", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const getUserProfileFormUserName = async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    const user = await User.findOne({ username: username });
+
+    if (!user) {
+      return res.status(404).json({ message: "user Not found" });
+    }
+    const userProfile = await Profile.findOne({ userId: user._id }).populate(
+      "userId",
+      "name username ProfilePicture"
+    );
+
+    return res.json({ userProfile });
   } catch (error) {
     console.error("Error in acceptOrReject Request", error);
     return res.status(500).json({ message: "Internal server error" });

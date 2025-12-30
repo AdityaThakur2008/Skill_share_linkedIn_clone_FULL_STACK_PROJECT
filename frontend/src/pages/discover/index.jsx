@@ -5,8 +5,10 @@ import UserLayout from "@/layout/Userlayout";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import style from "./style.module.css";
+import { useRouter } from "next/router";
 
 export default function Discover() {
+  const router = useRouter();
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -22,7 +24,12 @@ export default function Discover() {
           <div className={style.DiscoverContainer}>
             {authState.all_users.map((profile) => {
               return (
-                <div className={style.Profile_container} key={profile._id}>
+                <div  
+                  onClick={() => {
+                    router.push(`/veiw_profile/${profile.userId.username}`);
+                  }}
+                  className={style.Profile_container}
+                  key={profile._id}>
                   <div className={style.imgDiv}>
                     <img
                       className={style.img}

@@ -62,12 +62,27 @@ export const getUserProfile = createAsyncThunk(
 
 export const get_all_usersProfile = createAsyncThunk(
   "/user/get_all_usersProfile",
-  async (_ , thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      const response = await apiClient.get("/user/get_all_usersProfile")
-      return thunkAPI.fulfillWithValue(response?.data)
+      const response = await apiClient.get("/user/get_all_usersProfile");
+      return thunkAPI.fulfillWithValue(response?.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
-)
+);
+export const sendConnectionRequest = createAsyncThunk(
+  "/user/sendConnectionRequest",
+  async (recipientId, thunkAPI) => {
+    try {
+      
+      const response = await apiClient.post("/user/send_connection_request", {
+        recipientId : recipientId,
+        token: localStorage.getItem("token"),
+      });
+      return thunkAPI.fulfillWithValue(response?.data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
+    }
+  }
+);

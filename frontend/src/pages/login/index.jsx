@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import UserLayout from "@/layout/Userlayout";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { registerUser, loginUser } from "@/config/redux/action/authAction";
 import { clearMessage } from "@/config/redux/reducer/authReducer";
 export default function AuthPage() {

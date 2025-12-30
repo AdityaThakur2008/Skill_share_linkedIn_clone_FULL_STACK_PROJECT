@@ -4,6 +4,7 @@ import {
   getUserProfile,
   loginUser,
   registerUser,
+  sendConnectionRequest,
 } from "../../action/authAction";
 
 const initialState = {
@@ -18,7 +19,7 @@ const initialState = {
   error: null,
   profileFetched: false,
   all_users: [],
-  connection: [],
+  connections: [],
   connectionRequest: [],
   all_profile_fetched: false,
 };
@@ -91,6 +92,11 @@ const authSlice = createSlice({
         state.isError = false;
         state.all_profile_fetched = true;
         state.all_users = action.payload.allProfile;
+      })
+      .addCase(sendConnectionRequest.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        console.log("send connection succegull");
       });
   },
 });

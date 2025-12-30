@@ -1,5 +1,6 @@
 import comments from "../models/comments.model.js";
 import Post from "../models/post.model.js";
+
 import { uploadPostMedia } from "../utils/upload.js";
 
 export const createPost = async (req, res) => {
@@ -48,6 +49,7 @@ export const deletePost = async (req, res) => {
     const { postId } = req.body;
 
     const post = await Post.findById(postId);
+    await comments.find({ postId: postId }).deleteMany();
 
     if (post.userId.toString() !== userId.toString()) {
       return res
@@ -73,7 +75,7 @@ export const get_comments_by_post = async (req, res) => {
     const allcomments = await comments
       .find({ postId })
       .populate("userId", "username name");
-    return res.json( allcomments.reverse() );
+    return res.json(allcomments.reverse());
   } catch (error) {
     console.log("Something Went Wrong in get comments by  post", error);
     return res.status(500).json({ message: "Server Side Error" });

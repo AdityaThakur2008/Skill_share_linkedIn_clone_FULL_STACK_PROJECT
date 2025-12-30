@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./style.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { reset } from "@/config/redux/reducer/authReducer";
+import { getUserProfile } from "@/config/redux/action/authAction";
 
 export default function NavBar() {
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (authState.isToken) {
+      dispatch(getUserProfile());
+    }
+  }, [authState.isToken]);
   return (
     <header className={styles.navbar}>
       <div className={styles.logoSection}>
@@ -40,7 +47,7 @@ export default function NavBar() {
                 dispatch(reset());
               }}
               style={{ cursor: "pointer" }}>
-              <h3>Logo ut</h3>
+              <h3>Logout</h3>
             </div>
           </>
         )}
