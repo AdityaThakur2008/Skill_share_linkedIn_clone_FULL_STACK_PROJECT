@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { reset } from "@/config/redux/reducer/authReducer";
-import { getUserProfile } from "@/config/redux/action/authAction";
+import {
+  getMyConnections,
+  getUserProfile,
+} from "@/config/redux/action/authAction";
 
 export default function NavBar() {
   const authState = useSelector((state) => state.auth);
@@ -15,6 +18,7 @@ export default function NavBar() {
   useEffect(() => {
     if (authState.isToken) {
       dispatch(getUserProfile());
+      dispatch(getMyConnections());
     }
   }, [authState.isToken]);
   return (

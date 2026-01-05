@@ -75,14 +75,63 @@ export const sendConnectionRequest = createAsyncThunk(
   "/user/sendConnectionRequest",
   async (recipientId, thunkAPI) => {
     try {
-      
       const response = await apiClient.post("/user/send_connection_request", {
-        recipientId : recipientId,
+        recipientId: recipientId,
         token: localStorage.getItem("token"),
       });
       return thunkAPI.fulfillWithValue(response?.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+export const getMyConnections = createAsyncThunk(
+  "/user/getMyConnections",
+  async (_, thunkAPI) => {
+    try {
+      const res = await apiClient.get("/user/MyConnections", {
+        params: {
+          token: localStorage.getItem("token"),
+        },
+      });
+      return res.data.connections;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const receivedConnectionRequests = createAsyncThunk(
+  "/user/getConnectionRequests",
+  async (_, thunkAPI) => {
+    try {
+      const res = await apiClient.get("/user/getConnectionRequests", {
+        params: {
+          token: localStorage.getItem("token"),
+        },
+      });
+      return res.data.receivedRequests;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const acceptOrRejectConnection = createAsyncThunk(
+  "/user/acceptOrRejectConnection",
+  async ({ requesterId, action_type }, thunkAPI) => {
+    try {
+      const res = await apiClient.post("/user/acceptOrRejectConnection", {
+        requesterId,
+        action_type,
+        token: localStorage.getItem("token"),
+      });
+
+      return res.data; // { message, connection }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Something went wrong"
+      );
     }
   }
 );

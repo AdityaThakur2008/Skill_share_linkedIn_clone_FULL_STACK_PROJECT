@@ -12,7 +12,7 @@ export function generateResume(data) {
   const doc = new PDFDocument({ margin: 50 });
   doc.pipe(fs.createWriteStream("uploads/" + outputPath));
 
-  if (data.ProfilePicture) {
+  if (data.userId.profilePicture) {
     try {
       doc.image(data.userId.profilePicture, 50, 40, {
         width: 80,
@@ -284,15 +284,14 @@ export const getAllProfile = async (req, res) => {
 
 export const downloadResume = async (req, res) => {
   try {
-    const userId = req.body.userId;
-    console.log(userId);
+    const userId = req.query.Id;
 
-    const UserData = await Profile.findOne({ userId: userId }).populate(
+    const UserData = await Profile.findById(userId).populate(
       "userId",
       "name ProfilePicture"
     );
-    const a = await generateResume(UserData);
-    return res.status(201).json(a);
+    const url = await generateResume(UserData);
+    return res.status(201).json(url);
   } catch (error) {
     console.error("Error in download resume", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -328,21 +327,17 @@ export const SendConnectionRequest = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-export const connectionSendByMe = async (req, res) => {
+export const ConnectionREQSendByMe = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const SendedRequests = await Connection.find({ requester: userId });
-    if (!SendedRequests) {
-      return res
-        .status(404)
-        .json({ message: "No connection requsts send by you" });
-    }
-    res.status(200).json(SendedRequests);
-  } catch (error) {
-    console.error("Error in connection send by me ", error);
-    return res.status(500).json({ message: "Internal server error" });
+    const connections = await Connection.find({
+      requester: userId,
+    }).select("requester recipient status");
+
+    res.status(200).json({ connections });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -356,7 +351,7 @@ export const receivedConnectionRequests = async (req, res) => {
         .status(404)
         .json({ message: "No connection requsts received" });
     }
-    res.status(200).json(receivedRequests);
+    res.status(200).json({ receivedRequests });
   } catch (error) {
     console.error("Error in received Connection Request", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -365,44 +360,42 @@ export const receivedConnectionRequests = async (req, res) => {
 
 export const acceptOrReject = async (req, res) => {
   try {
-   
-    const { action_type, requesterId } = req.body; 
-    const userId = req.user._id; 
+    const { action_type, requesterId } = req.body;
+    const userId = req.user._id;
 
-    
     const connection = await Connection.findOne({
       requester: requesterId,
       recipient: userId,
-      status: "pending" 
+      status: "pending",
     });
 
     if (!connection) {
-   
-      return res.status(404).json({ message: "Connection request not found or already handled." });
+      return res
+        .status(404)
+        .json({ message: "Connection request not found or already handled." });
     }
 
-   
     if (action_type === "accept") {
-      connection.status = "accepted"; 
+      connection.status = "accepted";
     } else if (action_type === "reject") {
       connection.status = "rejected";
     } else {
-        return res.status(400).json({ message: "Invalid action type specified." });
+      return res
+        .status(400)
+        .json({ message: "Invalid action type specified." });
     }
 
     await connection.save();
-    
-    return res.json({ 
-        message: `Request successfully ${connection.status}.`,
-        connection: connection 
-    });
 
+    return res.json({
+      message: `Request successfully ${connection.status}.`,
+      connection: connection,
+    });
   } catch (error) {
     console.error("Error in acceptOrReject Request", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const getUserProfileFormUserName = async (req, res) => {
   try {

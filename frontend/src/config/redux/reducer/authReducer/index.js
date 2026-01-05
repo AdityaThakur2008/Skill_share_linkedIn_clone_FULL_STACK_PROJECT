@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   get_all_usersProfile,
+  getMyConnections,
   getUserProfile,
   loginUser,
   registerUser,
@@ -93,10 +94,27 @@ const authSlice = createSlice({
         state.all_profile_fetched = true;
         state.all_users = action.payload.allProfile;
       })
+      .addCase(sendConnectionRequest.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(sendConnectionRequest.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        console.log("send connection succegull");
+
+        const recipientId = action.meta.arg;
+
+        state.connections.push({
+          recipientId,
+          status: "pending",
+        });
+      })
+      .addCase(sendConnectionRequest.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.error = action.payload;
+      })
+      .addCase(getMyConnections.fulfilled, (state, action) => {
+        state.connections = action.payload;
       });
   },
 });

@@ -22,14 +22,14 @@ content-type: application/json
 GET http://localhost:8000/get_user_and_profile HTTP/1.1
 content-type: application/json
 {
-    "token": "0f5871df47f33aa532182c49f0e46feef49abefa4c4af417fc70f7f5320b72e7",
+    "token": "d14d3859d61a91c2c4bf035634feb272dd4c4cea2fbe1f34301f94b8228add13",
 }
 ###
 
 POST  http://localhost:8000/update_profile HTTP/1.1
 content-type: application/json
 {
-    "token": "0f5871df47f33aa532182c49f0e46feef49abefa4c4af417fc70f7f5320b72e7",
+    "token": "d14d3859d61a91c2c4bf035634feb272dd4c4cea2fbe1f34301f94b8228add13",
     "bio": "Full-stack MERN developer passionate about building scalable web apps.","location": "Mumbai, India","skills": ["JavaScript", "React", "Node.js", "MongoDB", "Express", "Next.js"],"education": [
     {
 

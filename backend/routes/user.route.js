@@ -11,9 +11,9 @@ import {
   getAllProfile,
   SendConnectionRequest,
   receivedConnectionRequests,
-  connectionSendByMe,
   acceptOrReject,
   getUserProfileFormUserName,
+  ConnectionREQSendByMe,
 } from "../controllers/user.controller.js";
 import verifyUserToken from "../middelWare/verifytoken.js";
 const router = Router();
@@ -39,9 +39,7 @@ router
 router
   .route("/user/getConnectionRequests")
   .get(verifyUserToken, receivedConnectionRequests);
-router
-  .route("/user/user_connection_request")
-  .get(verifyUserToken, connectionSendByMe);
+router.route("/user/MyConnections").get(verifyUserToken, ConnectionREQSendByMe);
 router
   .route("/user/accept_connection_request")
   .post(verifyUserToken, acceptOrReject);
