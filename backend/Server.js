@@ -11,8 +11,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://skill-share-linked-in-clo-git-7abb42-adityathakur2008s-projects.vercel.app/",
-      "https://skill-share-linked-in-clone-full-stack-project-a2y54yu6q.vercel.app/",
+      "https://skill-share-linked-in-clo-git-7abb42-adityathakur2008s-projects.vercel.app",
+      "https://skill-share-linked-in-clone-full-stack-project-a2y54yu6q.vercel.app",
     ],
 
     credentials: true,
