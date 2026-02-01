@@ -1,4 +1,3 @@
-
 import {
   createPost,
   deleteComment,
@@ -23,7 +22,6 @@ import {
 } from "@mui/icons-material";
 import { resetPostId } from "@/config/redux/reducer/postReducer";
 
-
 export default function dashboard() {
   const authState = useSelector((state) => state.auth);
   const postState = useSelector((state) => state.posts);
@@ -40,11 +38,16 @@ export default function dashboard() {
   const [commentBody, setCommentBody] = useState("");
 
   const handlePost = async () => {
+    if (!text.trim()) {
+      alert("Post cannot be empty");
+      return;
+    }
+
     const result = await dispatch(
       createPost({
         text: text,
         file: file,
-      })
+      }),
     );
     if (createPost.fulfilled.match(result)) {
       setText("");
@@ -81,6 +84,7 @@ export default function dashboard() {
                   placeholder="What do you want to talk about?"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
+                  required
                 />
               </div>
 
@@ -98,7 +102,10 @@ export default function dashboard() {
 
               {(text.length > 0 || file) && (
                 <button
-                  className={style.cp_postBtn}
+                  disabled={!text.trim()}
+                  className={`${style.cp_postBtn} ${
+                    !text.trim() ? style.disabledBtn : ""
+                  }`}
                   onClick={() => {
                     handlePost();
                   }}>
@@ -110,7 +117,6 @@ export default function dashboard() {
             <div>Loading...</div>
           )}
           {postState.postFatched && authState.profileFetched ? (
-            
             postState.posts.map((post) => {
               return (
                 <div key={post._id} className={style.postCard}>
@@ -214,7 +220,7 @@ export default function dashboard() {
                                 onClick={async () => {
                                   await dispatch(deleteComment(comment._id));
                                   await dispatch(
-                                    getAllComment({ _id: postState.postId })
+                                    getAllComment({ _id: postState.postId }),
                                   );
                                 }}>
                                 <DeleteOutline />

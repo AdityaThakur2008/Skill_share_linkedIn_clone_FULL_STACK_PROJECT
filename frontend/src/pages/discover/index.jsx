@@ -24,9 +24,9 @@ export default function Discover() {
           <div className={style.DiscoverContainer}>
             {authState.all_users.map((profile) => {
               return (
-                <div  
+                <div
                   onClick={() => {
-                    router.push(`/veiw_profile/${profile.userId.username}`);
+                    router.push(`/view_profile/${profile.userId.username}`);
                   }}
                   className={style.Profile_container}
                   key={profile._id}>

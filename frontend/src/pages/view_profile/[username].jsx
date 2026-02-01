@@ -1,6 +1,6 @@
 import { API_BASE_URL, apiClient } from "@/config";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import UserLayout from "@/layout/Userlayout";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,8 @@ import {
   Download,
   Favorite,
   FavoriteBorder,
+  ModeEdit,
+  PersonPinCircle,
   TextsmsOutlined,
 } from "@mui/icons-material";
 import {
@@ -31,15 +33,40 @@ export default function veiw_profile({ profile }) {
   const isOwnProfile = authState?.user?.userId?._id === profile?.userId._id;
 
   const [userPost, setUserPost] = useState([]);
+  const [isPending, setIsPending] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const connection = authState.connections.find(
-    (c) =>
-      c.requester === authState?.user?.userId?._id &&
-      c.recipient === profile?.userId._id
-  );
+  useEffect(() => {
+    if (
+      !authState?.connections?.length ||
+      !authState?.user?.userId?._id ||
+      !profile?.userId?._id
+    ) {
+      return;
+    }
+    if (
+      !Array.isArray(authState?.connections) ||
+      !authState?.user?.userId?._id ||
+      !profile?.userId?._id
+    ) {
+      return;
+    }
 
-  const isPending = connection?.status === "pending";
-  const isConnected = connection?.status === "accepted";
+    const connection = authState.connections.find(
+      (c) =>
+        (c?.requester?._id === authState.user.userId._id &&
+          c?.recipient?._id === profile.userId._id) ||
+        (c?.recipient?._id === authState.user.userId._id &&
+          c?.requester?._id === profile.userId._id),
+    );
+
+    setIsPending(connection?.status === "pending");
+    setIsConnected(connection?.status === "accepted");
+  }, [
+    authState.connections,
+    authState?.user?.userId?._id,
+    profile?.userId?._id,
+  ]);
 
   useEffect(() => {
     if (localStorage.getItem("token") == null) {
@@ -53,9 +80,6 @@ export default function veiw_profile({ profile }) {
 
   const getUserPost = async () => {
     await dispatch(getAllPosts());
-    // await dispatch(
-    //   getConnectionRequest({ token: localStorage.getItem("token") })
-    // );
   };
 
   useEffect(() => {
@@ -103,18 +127,33 @@ export default function veiw_profile({ profile }) {
 
                   alignItems: "center",
                 }}>
-                {!isOwnProfile &&
+                {isOwnProfile && (
+                  <button
+                    onClick={() => router.push("/editprofile")}
+                    className={style.button_18}>
+                    Edit Profile <ModeEdit />
+                  </button>
+                )}
+
+                {profile?.userId?._id &&
+                  !isOwnProfile &&
                   (isConnected ? (
-                    <button className={style.button_18}>Connected</button>
+                    <button className={style.button_18} disabled>
+                      Connected
+                    </button>
                   ) : isPending ? (
                     <button className={style.button_18} disabled>
                       Pending
                     </button>
                   ) : (
                     <button
-                      onClick={() =>
-                        dispatch(sendConnectionRequest(profile.userId._id))
-                      }
+                      onClick={async () => {
+                        if (!profile?.userId?._id) return;
+                        await dispatch(
+                          sendConnectionRequest(profile.userId._id),
+                        );
+                        await dispatch(getMyConnections());
+                      }}
                       className={style.button_18}>
                       Connect
                     </button>
@@ -123,7 +162,7 @@ export default function veiw_profile({ profile }) {
                   className={style.btn}
                   onClick={async () => {
                     const response = await apiClient.get(
-                      `/user/download_resume?Id=${profile._id}`
+                      `/user/download_resume?Id=${profile._id}`,
                     );
                     console.log(response);
                     window.open(`${API_BASE_URL}/${response?.data}`, "_blank");
@@ -140,9 +179,12 @@ export default function veiw_profile({ profile }) {
             <div className={style.activity_header}>
               <h4 style={{ margin: 0 }}>Activity</h4>
 
-              {!isOwnProfile &&
+              {profile?.userId?._id &&
+                !isOwnProfile &&
                 (isConnected ? (
-                  <button className={style.button_18}>Connected</button>
+                  <button className={style.button_18} disabled>
+                    Connected
+                  </button>
                 ) : isPending ? (
                   <button className={style.button_18} disabled>
                     Pending
@@ -150,6 +192,7 @@ export default function veiw_profile({ profile }) {
                 ) : (
                   <button
                     onClick={async () => {
+                      if (!profile?.userId?._id) return;
                       await dispatch(sendConnectionRequest(profile.userId._id));
                       await dispatch(getMyConnections());
                     }}
@@ -257,8 +300,25 @@ export default function veiw_profile({ profile }) {
             {/* Education */}
             <div className={style.extra_card}>
               <h4>Education</h4>
+
               {profile.education.length > 0 ? (
-                profile.education.map((edu, i) => <p key={i}>{edu}</p>)
+                profile.education.map((edu, i) => (
+                  <div key={i} className={style.edu_item}>
+                    <h5>{edu.school}</h5>
+                    <p>
+                      {edu.degree} · {edu.fieldOfStudy}
+                    </p>
+                    <p className={style.edu_date}>
+                      {new Date(edu.startDate).getFullYear()} –{" "}
+                      {edu.endDate
+                        ? new Date(edu.endDate).getFullYear()
+                        : "Present"}
+                    </p>
+                    {edu.description && (
+                      <p className={style.edu_desc}>{edu.description}</p>
+                    )}
+                  </div>
+                ))
               ) : (
                 <p className={style.empty_text}>No education details</p>
               )}
@@ -267,8 +327,23 @@ export default function veiw_profile({ profile }) {
             {/* Work Experience */}
             <div className={style.extra_card}>
               <h4>Experience</h4>
+
               {profile.workExperience.length > 0 ? (
-                profile.workExperience.map((work, i) => <p key={i}>{work}</p>)
+                profile.workExperience.map((work, i) => (
+                  <div key={i} className={style.exp_item}>
+                    <h5>{work.company}</h5>
+                    <p>{work.position}</p>
+                    <p className={style.edu_date}>
+                      {new Date(work.startDate).getFullYear()} –{" "}
+                      {work.endDate
+                        ? new Date(work.endDate).getFullYear()
+                        : "Present"}
+                    </p>
+                    {work.description && (
+                      <p className={style.edu_desc}>{work.description}</p>
+                    )}
+                  </div>
+                ))
               ) : (
                 <p className={style.empty_text}>No work experience added</p>
               )}
@@ -288,6 +363,6 @@ export async function getServerSideProps(context) {
   });
 
   const profile = await response.data.userProfile;
-  console.log(profile);
+
   return { props: { profile } };
 }

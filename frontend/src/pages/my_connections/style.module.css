@@ -1,0 +1,73 @@
+.connection_card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.connection_card .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.connection_card .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.connection_card .info {
+  display: flex;
+  flex-direction: column;
+}
+
+.connection_card .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.connection_card .username {
+  font-size: 12px;
+  color: #666;
+}
+
+.connection_card .email {
+  font-size: 12px;
+  color: #888;
+}
+
+.connection_card .right {
+  display: flex;
+  gap: 8px;
+}
+
+.accept_btn {
+  background: #0a66c2;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reject_btn {
+  background: #e4e6eb;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.no_req {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.7;
+}

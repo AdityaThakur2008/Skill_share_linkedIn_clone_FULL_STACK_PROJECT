@@ -1,0 +1,54 @@
+.page_wrapper {
+  padding: 20px;
+}
+
+.heading {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.list_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.connection_card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  cursor: pointer;
+  transition: 0.2s;
+  align-items: center;
+}
+
+.connection_card:hover {
+  background: #f4f4f4;
+}
+
+.profile_pic {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.details h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.details p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.no_connection {
+  color: #999;
+  text-align: center;
+  margin-top: 20px;
+}

@@ -16,17 +16,3 @@ export const uploadPostMedia = async (filePath) => {
     return null;
   }
 };
-
-export const uploadProfilePic = async (filePath) => {
-  try {
-    const res = await cloudinary.uploader.upload(filePath, {
-      folder: "profiles",
-      transformation: [{ width: 500, height: 500, crop: "fill" }],
-    });
-    fs.unlinkSync(filePath);
-    return res.secure_url;
-  } catch (err) {
-    console.log("Profile pic upload error:", err);
-    return null;
-  }
-};

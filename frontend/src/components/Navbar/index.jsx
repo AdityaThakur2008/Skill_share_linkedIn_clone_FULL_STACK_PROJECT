@@ -42,7 +42,14 @@ export default function NavBar() {
           <>
             <div>Hey , {authState.user.userId.name}</div>
             <div style={{ cursor: "pointer" }}>
-              <h3>Profile</h3>
+              <h3
+                onClick={() => {
+                  router.push(
+                    `/view_profile/${authState?.user?.userId?.username}`,
+                  );
+                }}>
+                Profile
+              </h3>
             </div>
             <div
               onClick={() => {

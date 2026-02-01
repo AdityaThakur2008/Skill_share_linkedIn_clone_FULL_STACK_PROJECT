@@ -12,6 +12,7 @@ import {
   ExploreRounded,
   HomeRounded,
   PeopleOutlineRounded,
+  PersonAddAlt,
 } from "@mui/icons-material";
 
 export default function Dashboard({ children }) {
@@ -28,7 +29,6 @@ export default function Dashboard({ children }) {
 
     dispatch(setistokenthere());
   }, []);
-    
 
   useEffect(() => {
     if (authState.isToken) {
@@ -61,9 +61,16 @@ export default function Dashboard({ children }) {
           <div
             onClick={() => router.push("/my_connections")}
             className={style.sideBarOptions}>
-            <PeopleOutlineRounded /> <p>My Connections</p>
+            <PersonAddAlt /> <p>Requests</p>
+          </div>
+
+          <div
+            onClick={() => router.push("/my_network")}
+            className={style.sideBarOptions}>
+            <PeopleOutlineRounded /> <p>Network</p>
           </div>
         </div>
+        {/* MOBILE BOTTOM NAV */}
 
         {/* FEED */}
         <div className={style.feed_container}>{children}</div>
@@ -78,6 +85,27 @@ export default function Dashboard({ children }) {
                 <p>{profile.userId.name}</p>
               </div>
             ))}
+        </div>
+      </div>
+      <div className={style.mobile_bottom_nav}>
+        <div onClick={() => router.push("/dashboard")}>
+          <HomeRounded />
+          <p>Scroll</p>
+        </div>
+
+        <div onClick={() => router.push("/discover")}>
+          <ExploreRounded />
+          <p>Discover</p>
+        </div>
+
+        <div onClick={() => router.push("/my_connections")}>
+          <PersonAddAlt />
+          <p>Requests</p>
+        </div>
+
+        <div onClick={() => router.push("/my_network")}>
+          <PeopleOutlineRounded />
+          <p>Network</p>
         </div>
       </div>
     </div>

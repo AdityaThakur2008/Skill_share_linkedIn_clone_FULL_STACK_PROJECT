@@ -31,7 +31,7 @@ export function generateResume(data) {
     .text(
       data.userId.name || "Unknown Name",
       data.profilePicture ? 150 : 50,
-      50
+      50,
     );
   doc
     .fontSize(12)
@@ -39,7 +39,7 @@ export function generateResume(data) {
     .text(
       data.location || "Location not provided",
       data.profilePicture ? 150 : 50,
-      80
+      80,
     );
 
   doc.moveDown(2);
@@ -66,7 +66,7 @@ export function generateResume(data) {
         .text(
           `${edu.startDate.toLocaleDateString("en-GB")} - ${
             edu.endDate.toLocaleDateString("en-GB") || "Present"
-          }`
+          }`,
         );
       doc.moveDown(1);
     });
@@ -89,7 +89,7 @@ export function generateResume(data) {
         .text(
           `${exp.startDate.toLocaleDateString("en-GB")} - ${
             exp.endDate.toLocaleDateString("en-GB") || "Present"
-          }`
+          }`,
         );
       if (exp.description) {
         doc
@@ -180,24 +180,22 @@ export const loginUser = async (req, res) => {
 
 export const uploadProfilePicture = async (req, res) => {
   try {
-    const user = req.body.user;
+    const user = req.user; // from verifyUserToken
 
     if (!req.file) {
       return res.status(400).json({ message: "Profile picture is required" });
     }
-    let mediaUrl = "";
-    let fileType = "";
 
-    if (req.file !== undefined) {
-      const uploadUrl = await uploadPostMedia(req.file.path);
-      mediaUrl = uploadUrl;
-      fileType = req.file.mimetype.split("/")[1];
-    }
+    // ✅ multer ne file already local me save kar di
+    const mediaUrl = `/profile/${req.file.filename}`;
+
     user.ProfilePicture = mediaUrl;
     await user.save();
-    return res
-      .status(200)
-      .json({ message: "Profile picture uploaded successfully" });
+
+    return res.status(200).json({
+      message: "Profile picture uploaded successfully",
+      profilePicture: mediaUrl,
+    });
   } catch (error) {
     console.error("Error uploading profile picture:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -273,7 +271,7 @@ export const getAllProfile = async (req, res) => {
   try {
     const allProfile = await Profile.find({}).populate(
       "userId",
-      "name username email ProfilePicture"
+      "name username email ProfilePicture",
     );
     return res.status(200).json({ allProfile });
   } catch (error) {
@@ -288,7 +286,7 @@ export const downloadResume = async (req, res) => {
 
     const UserData = await Profile.findById(userId).populate(
       "userId",
-      "name ProfilePicture"
+      "name ProfilePicture",
     );
     const url = await generateResume(UserData);
     return res.status(201).json(url);
@@ -327,16 +325,20 @@ export const SendConnectionRequest = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-export const ConnectionREQSendByMe = async (req, res) => {
+export const MyConnections = async (req, res) => {
   try {
     const userId = req.user._id;
 
     const connections = await Connection.find({
-      requester: userId,
-    }).select("requester recipient status");
+      $or: [{ requester: userId }, { recipient: userId }],
+    })
+      .select("requester recipient status")
+      .populate("requester", "name username ProfilePicture")
+      .populate("recipient", "name username ProfilePicture ");
 
     res.status(200).json({ connections });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -345,7 +347,10 @@ export const receivedConnectionRequests = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const receivedRequests = await Connection.find({ recipient: userId });
+    const receivedRequests = await Connection.find({
+      recipient: userId,
+      status: "pending",
+    }).populate("requester", "name username email ProfilePicture");
     if (!receivedRequests) {
       return res
         .status(404)
@@ -408,7 +413,7 @@ export const getUserProfileFormUserName = async (req, res) => {
     }
     const userProfile = await Profile.findOne({ userId: user._id }).populate(
       "userId",
-      "name username ProfilePicture"
+      "name username ProfilePicture",
     );
 
     return res.json({ userProfile });

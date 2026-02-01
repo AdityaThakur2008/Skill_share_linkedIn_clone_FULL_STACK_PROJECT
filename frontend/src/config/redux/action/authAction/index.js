@@ -1,6 +1,8 @@
 import { apiClient } from "@/config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { reset } from "../../reducer/authReducer";
+
 export const loginUser = createAsyncThunk(
   "user/login",
   async (user, thunkAPI) => {
@@ -22,7 +24,7 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
-  }
+  },
 );
 
 export const registerUser = createAsyncThunk(
@@ -40,7 +42,7 @@ export const registerUser = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 export const getUserProfile = createAsyncThunk(
@@ -55,9 +57,15 @@ export const getUserProfile = createAsyncThunk(
 
       return thunkAPI.fulfillWithValue(response?.data);
     } catch (error) {
+      if (error.response?.status == 404) {
+        localStorage.removeItem("token");
+
+        thunkAPI.dispatch(reset());
+      }
+
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 export const get_all_usersProfile = createAsyncThunk(
@@ -69,7 +77,7 @@ export const get_all_usersProfile = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 export const sendConnectionRequest = createAsyncThunk(
   "/user/sendConnectionRequest",
@@ -79,11 +87,12 @@ export const sendConnectionRequest = createAsyncThunk(
         recipientId: recipientId,
         token: localStorage.getItem("token"),
       });
+
       return thunkAPI.fulfillWithValue(response?.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 export const getMyConnections = createAsyncThunk(
   "/user/getMyConnections",
@@ -98,7 +107,7 @@ export const getMyConnections = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
-  }
+  },
 );
 
 export const receivedConnectionRequests = createAsyncThunk(
@@ -114,24 +123,69 @@ export const receivedConnectionRequests = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data.message);
     }
-  }
+  },
 );
 
 export const acceptOrRejectConnection = createAsyncThunk(
   "/user/acceptOrRejectConnection",
   async ({ requesterId, action_type }, thunkAPI) => {
     try {
-      const res = await apiClient.post("/user/acceptOrRejectConnection", {
+      const res = await apiClient.post("/user/accept_connection_request", {
         requesterId,
         action_type,
         token: localStorage.getItem("token"),
       });
 
-      return res.data; // { message, connection }
+      return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Something went wrong"
+        err.response?.data?.message || "Something went wrong",
       );
     }
-  }
+  },
+);
+
+export const updateUserProfile = createAsyncThunk(
+  "user/updateUserProfile",
+  async (profileData, thunkAPI) => {
+    try {
+      const res = await apiClient.post("/update_profile", {
+        token: localStorage.getItem("token"),
+        bio: profileData.bio,
+        location: profileData.location,
+        skills: profileData.skills,
+        education: profileData.education,
+        workExperience: profileData.workExperience,
+      });
+
+      // return payload for redux update
+      return profileData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Something went wrong",
+      );
+    }
+  },
+);
+
+export const updateProfilePicture = createAsyncThunk(
+  "profile/updateProfilePicture",
+  async (file, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const fd = new FormData();
+      fd.append("profile_picture", file);
+
+      await apiClient.post("/update_profile_picture", fd, {
+        params: {
+          token: localStorage.getItem("token"),
+        },
+      });
+
+      return true;
+    } catch (err) {
+      return rejectWithValue("Profile picture update failed");
+    }
+  },
 );

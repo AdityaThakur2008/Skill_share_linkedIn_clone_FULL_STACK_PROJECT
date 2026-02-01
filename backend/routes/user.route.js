@@ -13,19 +13,20 @@ import {
   receivedConnectionRequests,
   acceptOrReject,
   getUserProfileFormUserName,
-  ConnectionREQSendByMe,
+  MyConnections,
 } from "../controllers/user.controller.js";
 import verifyUserToken from "../middelWare/verifytoken.js";
+import { uploadProfilePic } from "../middelWare/uploadProfilePic.js";
 const router = Router();
 
 const upload = multer({ dest: "uploads/" });
-router
-  .route("/update_profile_picture")
-  .post(
-    upload.single("profile_picture"),
-    verifyUserToken,
-    uploadProfilePicture
-  );
+router.route("/update_profile_picture").post(
+  verifyUserToken,
+  uploadProfilePic.single("profile_picture"),
+
+  uploadProfilePicture,
+);
+
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/update_userProfile").post(updateUserProfile);
@@ -39,7 +40,7 @@ router
 router
   .route("/user/getConnectionRequests")
   .get(verifyUserToken, receivedConnectionRequests);
-router.route("/user/MyConnections").get(verifyUserToken, ConnectionREQSendByMe);
+router.route("/user/MyConnections").get(verifyUserToken, MyConnections);
 router
   .route("/user/accept_connection_request")
   .post(verifyUserToken, acceptOrReject);
