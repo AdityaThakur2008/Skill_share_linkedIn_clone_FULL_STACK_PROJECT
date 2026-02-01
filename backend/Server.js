@@ -9,15 +9,14 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://skill-share-linked-in-clo-git-7abb42-adityathakur2008s-projects.vercel.app",
-      "https://skill-share-linked-in-clone-full-stack-project-a2y54yu6q.vercel.app",
-    ],
-
+    origin: true,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+app.options("*", cors());
 app.use(express.json());
 app.use(express.static("uploads"));
 
