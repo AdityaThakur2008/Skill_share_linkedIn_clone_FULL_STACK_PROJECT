@@ -9,15 +9,22 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://skill-share-linked-in-clo-git-7abb42-adityathakur2008s-projects.vercel.app/",
+      "https://skill-share-linked-in-clone-full-stack-project-a2y54yu6q.vercel.app/",
+    ],
+
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(express.static("uploads"));
 
 app.use(postRoutes);
 app.use(userRoutes);
+
+const PORT = process.env.PORT || 8000;
 
 const start = async () => {
   const connectToDb = await mongoose
@@ -29,7 +36,7 @@ const start = async () => {
       console.log("failed to connect to mongoDB", err);
     });
 
-  app.listen(8000, () => {
+  app.listen(PORT, () => {
     console.log("server is listing on port 8000");
   });
 };
