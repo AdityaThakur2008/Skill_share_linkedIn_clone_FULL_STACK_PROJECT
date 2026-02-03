@@ -57,7 +57,7 @@ A full-stack LinkedIn clone built using the **MERN stack** with **Next.js**, fea
 
 ## 💻 GitHub Repository
 
-🔗 GitHub Repo: Your GitHub Repo Link Here]](https://github.com/AdityaThakur2008/Skill_share_linkedIn_clone_FULL_STACK_PROJECT
+🔗 GitHub Repo: https://github.com/AdityaThakur2008/Skill_share_linkedIn_clone_FULL_STACK_PROJECT
 
 ---
 
