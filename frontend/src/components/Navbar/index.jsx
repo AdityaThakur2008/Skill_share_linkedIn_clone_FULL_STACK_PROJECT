@@ -25,7 +25,7 @@ export default function NavBar() {
     <header className={styles.navbar}>
       <div className={styles.logoSection}>
         <div className={styles.logoBox}>S</div>
-        <div className={styles.logoText}>SkillUp</div>
+        <div className={styles.logoText}>Skill share</div>
         <span className={styles.tagline}>Social + Professional</span>
       </div>
 
