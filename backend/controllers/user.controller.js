@@ -168,10 +168,23 @@ export const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
-    const token = crypto.randomBytes(32).toString("hex");
+
+    const secret = process.env.JWT_SECRET || "default_jwt_secret";
+    const payload = { id: user._id, email: user.email };
+    const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+
     user.token = token;
     await user.save();
-    return res.status(200).json({ token });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+      path: "/",
+    });
+
+    return res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.error("Error logging in user:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -204,32 +217,53 @@ export const uploadProfilePicture = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { token, ...updateUserData } = req.body;
-    if (!token) {
-      return res.status(400).json({ message: "Token is required" });
-    }
-    const user = await User.findOne({ token });
+    const user = req.user;
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { username, email } = updateUserData;
+    const { username, email, ...updateUserData } = req.body;
 
-    const exitingUser = await User.findOne($or[{ username, email }]);
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
 
-    if (exitingUser) {
-      if (exitingUser || String(updateUserData._id !== String(user._id))) {
-        return res.status(302).json({ message: "User Already Exists" });
-      }
+    if (existingUser && String(existingUser._id) !== String(user._id)) {
+      return res.status(302).json({ message: "User Already Exists" });
     }
 
-    Object.assign(user, updateUserData);
+    Object.assign(user, {
+      ...updateUserData,
+      ...(username ? { username } : {}),
+      ...(email ? { email } : {}),
+    });
 
     await user.save();
 
     return res.status(200).json({ message: "User Update Successfully" });
   } catch (error) {
     console.error("Error in Update User_profile", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    if (req.user) {
+      req.user.token = "";
+      await req.user.save();
+    }
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out user:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

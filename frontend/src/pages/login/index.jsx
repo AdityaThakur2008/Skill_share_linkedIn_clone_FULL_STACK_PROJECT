@@ -26,12 +26,6 @@ export default function AuthPage() {
   }, [authState.loggedIn]);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      router.push("/dashboard");
-    }
-  });
-
-  useEffect(() => {
     if (message || error) {
       const timer = setTimeout(() => {
         dispatch(clearMessage());

@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   get_all_usersProfile,
   getUserProfile,
 } from "@/config/redux/action/authAction";
 import { useRouter } from "next/router";
-import { setistokenthere } from "@/config/redux/reducer/authReducer";
-import { useEffect } from "react";
+import { reset } from "@/config/redux/reducer/authReducer";
 import { useSelector, useDispatch } from "react-redux";
 import style from "./style.module.css";
 import {
@@ -21,20 +20,19 @@ export default function Dashboard({ children }) {
   const authState = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (localStorage.getItem("token") == null) {
-      router.push("/login");
-
-      return;
-    }
-
-    dispatch(setistokenthere());
-  }, []);
+    dispatch(getUserProfile())
+      .unwrap()
+      .catch(() => {
+        dispatch(reset());
+        router.push("/login");
+      });
+  }, [dispatch, router]);
 
   useEffect(() => {
     if (authState.isToken) {
       dispatch(getUserProfile());
     }
-  }, [authState.isToken]);
+  }, [authState.isToken, dispatch]);
   useEffect(() => {
     if (!authState.all_profile_fetched) {
       dispatch(get_all_usersProfile());

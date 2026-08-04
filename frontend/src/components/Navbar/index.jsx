@@ -7,6 +7,7 @@ import { reset } from "@/config/redux/reducer/authReducer";
 import {
   getMyConnections,
   getUserProfile,
+  logoutUser,
 } from "@/config/redux/action/authAction";
 
 export default function NavBar() {
@@ -52,10 +53,10 @@ export default function NavBar() {
               </h3>
             </div>
             <div
-              onClick={() => {
-                localStorage.removeItem("token");
-                router.push("/login");
+              onClick={async () => {
+                await dispatch(logoutUser()).unwrap().catch(() => {});
                 dispatch(reset());
+                router.push("/login");
               }}
               style={{ cursor: "pointer" }}>
               <h3>Logout</h3>

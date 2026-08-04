@@ -62,6 +62,7 @@ const authSlice = createSlice({
         state.isSuccess = true;
 
         state.loggedIn = true;
+        state.isToken = true;
         state.message = "login is successfull";
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -90,6 +91,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.profileFetched = true;
+        state.isToken = true;
         state.user = action.payload.User_profile;
       })
       .addCase(get_all_usersProfile.fulfilled, (state, action) => {

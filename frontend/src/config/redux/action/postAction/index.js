@@ -19,16 +19,7 @@ export const createPost = createAsyncThunk(
   "post/createPost",
   async (post, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
-
       const formData = new FormData();
-      formData.append("token", token);
       formData.append("body", post.text);
 
       if (post.file) {
@@ -61,16 +52,8 @@ export const deletePost = createAsyncThunk(
   "post/deletePost",
   async (post, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
-
       const response = await apiClient.delete("/delete_post", {
         data: {
-          token: token,
           postId: post.postId,
         },
       });
@@ -94,14 +77,7 @@ export const increment_like = createAsyncThunk(
   "post/like",
   async (postId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
       const response = await apiClient.post("/increment_like", {
-        token,
         postId,
       });
       if (response.status == 200) {
@@ -146,16 +122,7 @@ export const write_comment = createAsyncThunk(
   "post/writeComment",
   async (postData, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
-
       const response = await apiClient.post("/write_comment", {
-        token: token,
         postId: postData.postId,
         body: postData.body,
       });
@@ -173,15 +140,8 @@ export const deleteComment = createAsyncThunk(
   "post/deleteCommnet",
   async (commentId, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
-
       const response = await apiClient.delete("/delete_comment", {
-        data: { token: token, commentId },
+        data: { commentId },
       });
 
       return thunkAPI.fulfillWithValue({

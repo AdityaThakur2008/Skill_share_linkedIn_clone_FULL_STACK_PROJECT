@@ -4,10 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import style from "./style.module.css";
 import UserLayout from "@/layout/Userlayout";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setIsTokenNotThere,
-  setistokenthere,
-} from "@/config/redux/reducer/authReducer";
 import Dashboard from "@/layout/dashboardLayout";
 import { deletePost, getAllPosts } from "@/config/redux/action/postAction";
 import { useRouter } from "next/router";
@@ -67,16 +63,6 @@ export default function veiw_profile({ profile }) {
     authState?.user?.userId?._id,
     profile?.userId?._id,
   ]);
-
-  useEffect(() => {
-    if (localStorage.getItem("token") == null) {
-      dispatch(setIsTokenNotThere());
-
-      return;
-    }
-
-    dispatch(setistokenthere());
-  }, [authState.isToken]);
 
   const getUserPost = async () => {
     await dispatch(getAllPosts());

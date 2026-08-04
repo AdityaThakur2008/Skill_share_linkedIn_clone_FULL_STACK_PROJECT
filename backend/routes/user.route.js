@@ -3,6 +3,7 @@ import multer from "multer";
 import {
   registerUser,
   loginUser,
+  logoutUser,
   uploadProfilePicture,
   updateUserProfile,
   getUserAndProfile,
@@ -29,6 +30,7 @@ router.route("/update_profile_picture").post(
 
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
+router.route("/logout").post(verifyUserToken, logoutUser);
 router.route("/update_userProfile").post(updateUserProfile);
 router.route("/get_user_and_profile").get(verifyUserToken, getUserAndProfile);
 router.route("/update_profile").post(verifyUserToken, updateProfile);

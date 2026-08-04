@@ -1,5 +1,5 @@
-import { apiClient } from "@/config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { apiClient } from "@/config";
 
 import { reset } from "../../reducer/authReducer";
 
@@ -12,17 +12,9 @@ export const loginUser = createAsyncThunk(
         password: user.password,
       });
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-      } else {
-        return thunkAPI.rejectWithValue({
-          message: "token not provided",
-        });
-      }
-
-      return thunkAPI.fulfillWithValue(response.data.token);
+      return thunkAPI.fulfillWithValue(response.data.message);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   },
 );
@@ -49,17 +41,12 @@ export const getUserProfile = createAsyncThunk(
   "user/getAboutUser",
   async (_, thunkAPI) => {
     try {
-      const response = await apiClient.get("/get_user_and_profile", {
-        params: {
-          token: localStorage.getItem("token"),
-        },
-      });
+      const response = await apiClient.get("/get_user_and_profile");
 
-      return thunkAPI.fulfillWithValue(response?.data);
+      return thunkAPI.fulfillWithValue(response.data);
     } catch (error) {
-      if (error.response?.status == 404) {
-        localStorage.removeItem("token");
-
+      const status = error.response?.status;
+      if ([401, 403, 404].includes(status)) {
         thunkAPI.dispatch(reset());
       }
 
@@ -84,8 +71,7 @@ export const sendConnectionRequest = createAsyncThunk(
   async (recipientId, thunkAPI) => {
     try {
       const response = await apiClient.post("/user/send_connection_request", {
-        recipientId: recipientId,
-        token: localStorage.getItem("token"),
+        recipientId,
       });
 
       return thunkAPI.fulfillWithValue(response?.data);
@@ -98,14 +84,10 @@ export const getMyConnections = createAsyncThunk(
   "/user/getMyConnections",
   async (_, thunkAPI) => {
     try {
-      const res = await apiClient.get("/user/MyConnections", {
-        params: {
-          token: localStorage.getItem("token"),
-        },
-      });
+      const res = await apiClient.get("/user/MyConnections");
       return res.data.connections;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data.message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message);
     }
   },
 );
@@ -114,14 +96,10 @@ export const receivedConnectionRequests = createAsyncThunk(
   "/user/getConnectionRequests",
   async (_, thunkAPI) => {
     try {
-      const res = await apiClient.get("/user/getConnectionRequests", {
-        params: {
-          token: localStorage.getItem("token"),
-        },
-      });
+      const res = await apiClient.get("/user/getConnectionRequests");
       return res.data.receivedRequests;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data.message);
+      return thunkAPI.rejectWithValue(err.response?.data?.message);
     }
   },
 );
@@ -133,7 +111,6 @@ export const acceptOrRejectConnection = createAsyncThunk(
       const res = await apiClient.post("/user/accept_connection_request", {
         requesterId,
         action_type,
-        token: localStorage.getItem("token"),
       });
 
       return res.data;
@@ -149,16 +126,8 @@ export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
   async (profileData, thunkAPI) => {
     try {
-      const res = await apiClient.post("/update_profile", {
-        token: localStorage.getItem("token"),
-        bio: profileData.bio,
-        location: profileData.location,
-        skills: profileData.skills,
-        education: profileData.education,
-        workExperience: profileData.workExperience,
-      });
+      await apiClient.post("/update_profile", profileData);
 
-      // return payload for redux update
       return profileData;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -172,14 +141,12 @@ export const updateProfilePicture = createAsyncThunk(
   "profile/updateProfilePicture",
   async (file, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
-
       const fd = new FormData();
       fd.append("profile_picture", file);
 
       await apiClient.post("/update_profile_picture", fd, {
-        params: {
-          token: localStorage.getItem("token"),
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
       });
 

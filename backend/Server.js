@@ -7,9 +7,16 @@ import userRoutes from "./routes/user.route.js";
 dotenv.config();
 
 const app = express();
+const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:3000"];
+
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS policy: Origin not allowed"), false);
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -17,10 +24,15 @@ app.use(
 );
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));
 
 app.use(postRoutes);
 app.use(userRoutes);
+
+app.get("/", (req, res) => {
+  res.send("server is running");
+});
 
 const PORT = process.env.PORT || 8000;
 
